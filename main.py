@@ -19,23 +19,26 @@ print(board[0])
 
 
 def calculate_rects():
-    rect_list = []
+    rect_array = []
     for x in range(BOARD_SIZE):
+        x_list = []
         for y in range(BOARD_SIZE):
             rect_i = (((1 + x) * CELL_SIZE) - CELL_SIZE,
                       ((1 + y) * CELL_SIZE) - CELL_SIZE,
                       CELL_SIZE, CELL_SIZE)
-            rect_list.append(rect_i)
-    return rect_list
+            x_list.append(rect_i)
+        rect_array.append(x_list)
+    return rect_array
+
+
+rects = calculate_rects()
 
 
 def draw_board():
     for x in range(BOARD_SIZE):
         for y in range(BOARD_SIZE):
             pygame.draw.rect(surface=screen,
-                             rect=(((1 + x) * CELL_SIZE) - CELL_SIZE,
-                                   ((1 + y) * CELL_SIZE) - CELL_SIZE,
-                                   CELL_SIZE, CELL_SIZE),
+                             rect=rects[x][y],
                              color=colors[board[x][y]])
 
 
