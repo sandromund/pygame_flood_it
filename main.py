@@ -15,8 +15,6 @@ pygame.init()
 screen = pygame.display.set_mode((window_size, window_size))
 pygame.display.set_caption('Flood-it!')
 
-print(board[0])
-
 
 def calculate_rects():
     rect_array = []
@@ -35,11 +33,28 @@ rects = calculate_rects()
 
 
 def draw_board():
-    for x in range(BOARD_SIZE):
-        for y in range(BOARD_SIZE):
+    for x_board in range(BOARD_SIZE):
+        for y_board in range(BOARD_SIZE):
             pygame.draw.rect(surface=screen,
-                             rect=rects[x][y],
-                             color=colors[board[x][y]])
+                             rect=rects[x_board][y_board],
+                             color=colors[board[x_board][y_board]])
+
+
+def get_color_of_clicked_rect(mouse_position):
+    """
+
+    transformation math of calculate_rects()
+    x_mouse ==  (1 + x) * CELL_SIZE) - CELL_SIZE
+    x_mouse + CELL_SIZE == (1 + x) * CELL_SIZE
+    ((x_mouse + CELL_SIZE) / CELL_SIZE) - 1 ==  x
+
+    :param mouse_position:
+    :return:
+    """
+    x_mouse, y_mouse = mouse_position
+    x_new = ((x_mouse + CELL_SIZE) // CELL_SIZE) - 1
+    y_new = ((y_mouse + CELL_SIZE) // CELL_SIZE) - 1
+    return x_new, y_new
 
 
 running = True
@@ -49,7 +64,8 @@ while running:
             running = False
         mouse_buttons = pygame.mouse.get_pressed()
         if mouse_buttons[0]:
-            print(event.pos)
+            x, y = get_color_of_clicked_rect(event.pos)
+            print(x, y)
     screen.fill(BACKGROUND_COLOR)
     draw_board()
     pygame.display.flip()
