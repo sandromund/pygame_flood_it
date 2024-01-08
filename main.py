@@ -61,18 +61,19 @@ def get_color_of_clicked_rect(mouse_position):
 
 def find_connection():
     queue = [(0, 0)]
+    seen = set()
     while len(queue) > 0:
         x_i, y_j = queue.pop(0)
-        if board[x_i][y_j] == 1:
+        if (x_i, y_j) in seen:
             continue
         for i, j in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
             x_t = x_i + i
             y_t = y_j + j
             if 0 <= x_t < BOARD_SIZE and 0 <= y_t < BOARD_SIZE:
-                print(x_t, y_t)
                 if board[x_t][y_t] == board[0][0]:
                     connected[x_t][y_t] = 1
                     queue.append((x_t, y_t))
+        seen.add((x_i, y_j))
 
 
 find_connection()
@@ -84,7 +85,8 @@ while running:
             running = False
         mouse_buttons = pygame.mouse.get_pressed()
         if mouse_buttons[0]:
-            x, y = get_color_of_clicked_rect(event.pos)
+            mouse_pos = pygame.mouse.get_pos()
+            x, y = get_color_of_clicked_rect(mouse_pos)
             print(x, y)
             print(connected)
     screen.fill(BACKGROUND_COLOR)
