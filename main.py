@@ -4,7 +4,7 @@ import numpy as np
 import pygame
 
 BOARD_SIZE = 18
-N_COLORS = 2
+N_COLORS = 6
 CELL_SIZE = 50
 BACKGROUND_COLOR = (194, 173, 138)
 
@@ -76,6 +76,16 @@ def find_connection():
         seen.add((x_i, y_j))
 
 
+def color_connected(new_color):
+    if new_color == board[0][0]:
+        return
+    for x_board in range(BOARD_SIZE):
+        for y_board in range(BOARD_SIZE):
+            if connected[x_board][y_board] > 0:
+                board[x_board][y_board] = new_color
+    find_connection()
+
+
 find_connection()
 
 running = True
@@ -87,8 +97,10 @@ while running:
         if mouse_buttons[0]:
             mouse_pos = pygame.mouse.get_pos()
             x, y = get_color_of_clicked_rect(mouse_pos)
-            print(x, y)
-            print(connected)
+            clicked_color = board[x][y]
+            color_connected(clicked_color)
+            print(x, y, clicked_color)
+
     screen.fill(BACKGROUND_COLOR)
     draw_board()
 
