@@ -3,10 +3,10 @@ import sys
 import numpy as np
 import pygame
 
-BOARD_SIZE = 18
+BOARD_SIZE = 14
 N_COLORS = 6
 CELL_SIZE = 50
-BACKGROUND_COLOR = (194, 173, 138)
+N_MAX_MOVES = 25
 
 colors = np.random.randint(255, size=(N_COLORS, 3))
 board = np.random.randint(N_COLORS, size=(BOARD_SIZE, BOARD_SIZE))
@@ -15,7 +15,7 @@ connected[0][0] = 1
 window_size = CELL_SIZE * BOARD_SIZE
 pygame.init()
 screen = pygame.display.set_mode((window_size, window_size))
-pygame.display.set_caption('Flood-it!')
+moves_counter = 0
 
 
 def calculate_rects():
@@ -56,7 +56,7 @@ def get_color_of_clicked_rect(mouse_position):
     x_mouse, y_mouse = mouse_position
     x_new = ((x_mouse + CELL_SIZE) // CELL_SIZE) - 1
     y_new = ((y_mouse + CELL_SIZE) // CELL_SIZE) - 1
-    return x_new, y_new
+    return board[x_new][y_new]
 
 
 def find_connection():
@@ -83,25 +83,23 @@ def color_connected(new_color):
         for y_board in range(BOARD_SIZE):
             if connected[x_board][y_board] > 0:
                 board[x_board][y_board] = new_color
-    find_connection()
 
 
 find_connection()
 
 running = True
 while running:
+    pygame.display.set_caption(f'Flood-it! - Move: {moves_counter} / {N_MAX_MOVES}')
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         mouse_buttons = pygame.mouse.get_pressed()
         if mouse_buttons[0]:
             mouse_pos = pygame.mouse.get_pos()
-            x, y = get_color_of_clicked_rect(mouse_pos)
-            clicked_color = board[x][y]
+            clicked_color = get_color_of_clicked_rect(mouse_pos)
             color_connected(clicked_color)
-            print(x, y, clicked_color)
-
-    screen.fill(BACKGROUND_COLOR)
+            find_connection()
+            moves_counter += 1
     draw_board()
 
     pygame.display.flip()
